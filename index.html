@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <title>Todo App</title>
+</head>
+<body>
+    <div class="searchbar">
+        <span class="material-icons icon-search">
+            search
+        </span>
+        <input type="text" placeholder="Search existing Todos">
+    </div>
+
+    <div class="create-todo-button">
+        <span class="material-icons create-todos-icon">
+            create
+        </span>
+    </div>
+
+    <div class="create-todo-dialog">
+        <input type="text" class="create-todo-title" placeholder="Todo Title">
+        <hr>
+        <textarea placeholder="Todo Body" class="create-todo-body"></textarea>
+        <div class="buttons">
+            <div class="save-btn">Save</div>
+            <div class="discard-btn">Discard</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
