@@ -74,15 +74,25 @@ textarea {
 
 .todo {
     border-bottom: solid 1px black;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     outline: none;
     cursor: pointer;
 }
 
+.completed {
+    background: rgb(75, 129, 232);
+    color: white;
+    font-style: italic;
+}
+
+.completed .todo-content {
+    text-decoration: line-through;
+}
+
 .todo:hover {
-    background: #eee;
+    box-shadow: 5px 5px 10px;
 }
 
 .todo-content {

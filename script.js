@@ -1,10 +1,10 @@
 const todos = [
-    {
-        title: 'make tea'
-    },
-    {
-        title: 'go to the grocery store'
-    }
+    // {
+    //     title: 'make tea'
+    // },
+    // {
+    //     title: 'go to the grocery store'
+    // }
 ];  // store todos here for now
 
 const createTodoWindow = {
@@ -24,6 +24,7 @@ function Todo(title, body) {
     this.id = uuid(),
     this.title = title;
     this.body = body;
+    this.completed = false;
 }
 
 // Saves this todo
@@ -33,6 +34,10 @@ Todo.prototype.saveTodo = function() {
 
 Todo.prototype.deleteTodo = function() {
     todos.splice(todos.indexOf(this), 1);  // TODO: Make this asynchronous and throw an error if failed
+}
+
+Todo.prototype.toggleTodo = function() {
+    this.completed = !this.completed;  // TODO: Make this asynchronous and throw an error if failed
 }
 
 // Asynchronous call which fetches Todos
@@ -45,6 +50,9 @@ function getTodosAsync() {
 function createTodoElement(todo) {
     const todoElement = document.createElement('div');
     todoElement.classList.add('todo');
+    if(todo.completed) {
+        todoElement.classList.add('completed');
+    }
     todoElement.setAttribute('data-todo-id', todo.id);
 
     todoElement.innerHTML = `
@@ -120,6 +128,18 @@ function deleteTodoElement(todoID) {
     }
 }
 
+// toggle a todo's selection
+function toggleTodoSelection(todoElement) {
+    try {
+        const todoID = todoElement.getAttribute('data-todo-id');
+        const todo = todos.filter(todo => todo.id === todoID)[0];
+        todo.toggleTodo();
+        displayTodos(getTodosAsync());
+    }catch(e) {
+        alert(e.message);
+    }
+}
+
 // handle click event in todo list
 function handleTodoListClick(event) {
     const todoElement = event.target.closest('.todo');
@@ -129,6 +149,10 @@ function handleTodoListClick(event) {
 
     if(event.target.classList.contains("trash-btn")) {
         deleteTodoElement(todoElement.getAttribute('data-todo-id'));
+    }else if(event.target.classList.contains("edit-btn")) {
+        // do something
+    }else {
+        toggleTodoSelection(todoElement);
     }
 }
 
