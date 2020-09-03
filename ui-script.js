@@ -29,13 +29,22 @@ function createTodoElement(todo) {
 }
 
 // display todos
-function displayTodos(todos) {
+function getTodosAndDisplay() {
     const todoList = document.querySelector('.todo-list');
-    todoList.innerHTML = '';    // TODO: find a better way to do this
-    todos.forEach(todo => {
-        const todoElement = createTodoElement(todo);
-        todoList.appendChild(todoElement);
-    });
+    readTodos()
+        .then(res => res.data)
+        .then(todosReceived => {
+            todos = todosReceived;
+            todoList.innerHTML = '';    // TODO: find a better way to do this
+            todos.forEach(todo => {
+                const todoElement = createTodoElement(todo);
+                todoList.appendChild(todoElement);
+            });
+        })
+        .catch(e => {
+            alert(e.message);
+        });
+    
 }
 
 // function to open the todo dialog
@@ -71,37 +80,41 @@ function clearForm() {
 
 // performs the actions to save the todo
 function saveTodoElement() {    // TODO: Find a better name for this
-    try {
-        const todo = getFormInfo();
-        todo.saveTodo();
-        closeCreateTodoDialog();
-    }catch(e) {
-        alert(e.message);
-    }
-    displayTodos(getTodosAsync());
+    const todo = getFormInfo();
+    createTodo(todo)
+        .then(_ => {
+            closeCreateTodoDialog();
+        })
+        .catch(_ => {
+            alert(e.message);
+        })
+        .finally(_ => {
+            getTodosAndDisplay();
+        });
 }
 
 // performs the actions to delete a todo based on it's id
 function deleteTodoElement(todoID) {
-    try {
-        const todo = todos.filter(todo => todo.id === todoID)[0];
-        todo.deleteTodo();  // may throw an error
-        displayTodos(getTodosAsync());
-    }catch(e) {
-        alert(e.message);
-    }
+    deleteTodo(todoID)
+        .then(res => {
+            getTodosAndDisplay();
+        })
+        .catch(e => {
+            alert(e.message);
+        });
 }
 
 // toggle a todo's selection
 function toggleTodoSelection(todoElement) {
-    try {
-        const todoID = todoElement.getAttribute('data-todo-id');
-        const todo = todos.filter(todo => todo.id === todoID)[0];
-        todo.toggleTodo();
-        displayTodos(getTodosAsync());
-    }catch(e) {
-        alert(e.message);
-    }
+    const todoID = todoElement.getAttribute('data-todo-id');
+    const [todo] = todos.filter(todo => todo.id === todoID);
+    
+    updateTodo(todoID, {completed: !todo.completed})
+        .then(res => {
+            getTodosAndDisplay();
+        }).catch(e => {
+            alert(e.message);
+        });
 }
 
 // handle click event in todo list
@@ -120,7 +133,7 @@ function handleTodoListClick(event) {
     }
 }
 
-displayTodos(getTodosAsync());
+getTodosAndDisplay();
 createTodoBtn.addEventListener('click', openCreateTodoDialog);
 createTodoWindow.saveBtn.addEventListener('click', saveTodoElement);
 createTodoWindow.discardBtn.addEventListener('click', closeCreateTodoDialog);
