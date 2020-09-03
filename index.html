@@ -9,11 +9,13 @@
     <title>Todo App</title>
 </head>
 <body>
+    <div class="backdrop"></div>
+
     <div class="searchbar">
+        <input type="text" placeholder="Search existing Todos">
         <span class="material-icons icon-search">
             search
         </span>
-        <input type="text" placeholder="Search existing Todos">
     </div>
 
     <div class="create-todo-button">
@@ -21,6 +23,8 @@
             create
         </span>
     </div>
+
+    <div class="todo-list"></div>
 
     <div class="create-todo-dialog">
         <input type="text" class="create-todo-title" placeholder="Todo Title">

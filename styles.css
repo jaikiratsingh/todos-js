@@ -14,6 +14,18 @@ body {
     align-items: center;
 }
 
+.backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: black;
+    opacity: 0.5;
+    z-index: 1;
+}
+
 .searchbar {
     border: #333 solid 1px;
     background: #fff;
@@ -49,7 +61,25 @@ textarea {
 
 .searchbar > input {
     flex: 1;
-    text-align: right;
+}
+
+.todo-list {
+    width: 50%;
+    min-width: 50%;
+    padding: 0 10px;
+    border: #333 solid 1px;
+    background: #fff;
+}
+
+.todo {
+    border-bottom: solid 1px black;
+    padding: 20px;
+    font-size: 20px;
+    outline: none;
+}
+
+.todo:last-child {
+    border: none;
 }
 
 .create-todo-button {
@@ -72,11 +102,11 @@ textarea {
 }
 
 .create-todo-dialog {
-    z-index: 1;
+    z-index: 2;
     display: none;
     border-radius: 20px 20px 0 0;
     border: 1px #333 solid;
-    width: 50%;
+    width: 65%;
     background: white;
     position: fixed;
     left: 50%;
@@ -88,6 +118,7 @@ textarea {
     display: block;
     width: 100%;
     margin: 20px auto;
+    font-weight: bold;
 }
 
 .create-todo-body {
