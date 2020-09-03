@@ -1,4 +1,11 @@
-const todos = [];  // store todos here for now
+const todos = [
+    {
+        title: 'make tea'
+    },
+    {
+        title: 'go to the grocery store'
+    }
+];  // store todos here for now
 
 const createTodoWindow = {
     dialog: document.querySelector('.create-todo-dialog'),
@@ -9,16 +16,23 @@ const createTodoWindow = {
 };
 
 const backDrop = document.querySelector('.backdrop');
+const createTodoBtn = document.querySelector('.create-todo-button');
+const todoListItem = document.querySelector('.todo-list');
 
 // constructor function for a todo
 function Todo(title, body) {
+    this.id = uuid(),
     this.title = title;
     this.body = body;
 }
 
 // Saves this todo
-Todo.prototype.save = function() {
+Todo.prototype.saveTodo = function() {
     todos.push(this);  // TODO: make it asycnhronous and throw error if save is failed
+}
+
+Todo.prototype.deleteTodo = function() {
+    todos.splice(todos.indexOf(this), 1);  // TODO: Make this asynchronous and throw an error if failed
 }
 
 // Asynchronous call which fetches Todos
@@ -28,10 +42,17 @@ function getTodosAsync() {
 }
 
 // returns a todo element
-function getTodoElement(todo) {
+function createTodoElement(todo) {
     const todoElement = document.createElement('div');
-    todoElement.classList.add("todo");
-    todoElement.innerHTML = `${todo.title}`;
+    todoElement.classList.add('todo');
+    todoElement.setAttribute('data-todo-id', todo.id);
+
+    todoElement.innerHTML = `
+        <div class="todo-content">${todo.title}</div>
+        <span class="material-icons edit-btn">edit</span>
+        <span class="material-icons trash-btn">delete</span>
+    `;
+
     return todoElement;
 }
 
@@ -40,12 +61,10 @@ function displayTodos(todos) {
     const todoList = document.querySelector('.todo-list');
     todoList.innerHTML = '';    // TODO: find a better way to do this
     todos.forEach(todo => {
-        const todoElement = getTodoElement(todo);
+        const todoElement = createTodoElement(todo);
         todoList.appendChild(todoElement);
     });
 }
-
-const createTodoBtn = document.querySelector('.create-todo-button');
 
 // function to open the todo dialog
 function openCreateTodoDialog() {
@@ -79,18 +98,43 @@ function clearForm() {
 }
 
 // performs the actions to save the todo
-function saveTodoAction() {    // TODO: Find a better name for this
+function saveTodoElement() {    // TODO: Find a better name for this
     try {
         const todo = getFormInfo();
-        todo.save();
+        todo.saveTodo();
         closeCreateTodoDialog();
     }catch(e) {
         alert(e.message);
     }
     displayTodos(getTodosAsync());
 }
-createTodoBtn.addEventListener('click', openCreateTodoDialog);
 
-createTodoWindow.saveBtn.addEventListener('click', saveTodoAction);
+// performs the actions to delete a todo based on it's id
+function deleteTodoElement(todoID) {
+    try {
+        const todo = todos.filter(todo => todo.id === todoID)[0];
+        todo.deleteTodo();  // may throw an error
+        displayTodos(getTodosAsync());
+    }catch(e) {
+        alert(e.message);
+    }
+}
+
+// handle click event in todo list
+function handleTodoListClick(event) {
+    const todoElement = event.target.closest('.todo');
+    if(!todoElement || !todoListItem.contains(todoElement)) {
+        throw new Error("Something unexpected has happened here");
+    }
+
+    if(event.target.classList.contains("trash-btn")) {
+        deleteTodoElement(todoElement.getAttribute('data-todo-id'));
+    }
+}
+
+displayTodos(getTodosAsync());
+createTodoBtn.addEventListener('click', openCreateTodoDialog);
+createTodoWindow.saveBtn.addEventListener('click', saveTodoElement);
 createTodoWindow.discardBtn.addEventListener('click', closeCreateTodoDialog);
 backDrop.addEventListener('click', closeCreateTodoDialog);
+todoListItem.addEventListener('click', handleTodoListClick)
