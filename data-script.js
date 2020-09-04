@@ -11,6 +11,7 @@ const priorities = {
 
 // category options
 const categories = {
+    NO: 'default',
     WORK: 'WORK',
     HOBBY: 'HOBBY',
     ADMIN: 'ADMIN',
