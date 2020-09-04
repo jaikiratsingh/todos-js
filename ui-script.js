@@ -16,6 +16,7 @@ const filterTodosWindow = {
     clearFiltersBtn: document.querySelector('.clear-filter-btn')
 }
 
+const searchBarInput = document.querySelector('.searchbar input');
 const backDrop = document.querySelector('.backdrop');
 const createTodoBtn = document.querySelector('.create-todo-button');
 const filterTodosBtn = document.querySelector('.filter-todos-button');
@@ -122,6 +123,25 @@ function getFilteredTodos(todos) {
     return filteredTodos;
 }
 
+// find matching todos according to regex
+function findMatchesTodo(todoTitlePattern, todos) {
+    const regex = new RegExp(todoTitlePattern, 'gi');
+    return todos.filter(todo => todo.title.match(regex));
+}
+
+// handles the search pattern of the search bar
+function searchPatternHandler() {
+    const patternToMatch = this.value;
+    console.log(patternToMatch);
+
+    const filteredTodos = getFilteredTodos(todos);
+    const matchedTodos = findMatchesTodo(patternToMatch, filteredTodos);
+
+    console.log(matchedTodos);
+
+    displayTodos(matchedTodos);
+}
+
 // handler to apply filters
 function applyFiltersHandler() {
     const filteredTodos = getFilteredTodos(todos);
@@ -138,6 +158,7 @@ function clearFiltersHandler() {
 
 // clear the contents of the filter dialog
 function clearFilterForm() {
+    searchBarInput.value = "";
     filterTodosWindow.prioritySelect.value = priorities.NO;
     filterTodosWindow.categorySelect.value = 'default';
 }
@@ -224,6 +245,8 @@ function handleTodoListClick(event) {
 }
 
 getTodosAndDisplay();
+
+searchBarInput.addEventListener('keyup', searchPatternHandler);
 
 createTodoBtn.addEventListener('click', openCreateTodoDialog);
 filterTodosBtn.addEventListener('click', openFilterTodosDialog);
