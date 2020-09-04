@@ -30,8 +30,25 @@ function createTodoElement(todo) {
     }
     todoElement.setAttribute('data-todo-id', todo.id);
 
+    let priorityIndicatorHTML;
+    switch(todo.priority) {
+        case priorities.NO :
+            priorityIndicatorHTML = '';
+            break;
+        case priorities.LOW :
+            priorityIndicatorHTML = `<span class="priority-indicator low">!</span>`;
+            break;
+        case priorities.MEDIUM :
+            priorityIndicatorHTML = `<span class="priority-indicator medium">!!</span>`;
+            break;
+        case priorities.HIGH :
+            priorityIndicatorHTML = `<span class="priority-indicator high">!!!</span>`;
+            break;
+    }
+
     todoElement.innerHTML = `
         <div class="todo-content">${todo.title}</div>
+        ${priorityIndicatorHTML}
         <span class="material-icons edit-btn">edit</span>
         <span class="material-icons trash-btn">delete</span>
     `;
