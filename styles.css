@@ -81,6 +81,25 @@ textarea {
     cursor: pointer;
 }
 
+.todo-options {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 1.2rem;
+}
+
+.todo-option {
+    display: flex;
+    align-items: center;
+}
+
+select {
+    margin: 0 10px;
+    outline: none;
+    font-size: 16px;
+}
+
 .completed {
     background: rgb(75, 129, 232);
     color: white;
@@ -137,6 +156,56 @@ textarea {
     padding: 10px;
 }
 
+.filter-todos-button {
+    background: #fff;
+    border: #333 solid 1px;
+    border-radius: 50%;
+    position: fixed;
+    cursor: pointer;
+    bottom: 100px;
+    left: 100px;
+}
+
+.filter-todos-button:hover {
+    border: var(--primary-color) solid 1px;
+    color: var(--primary-color);
+    box-shadow: 5px 5px 5px #ccc;
+}
+
+.filter-todos-icon {
+    padding: 10px;
+}
+
+.filter-todos-dialog {
+    z-index: 2;
+    display: none;
+    border-radius: 20px;
+    border: 1px #333 solid;
+    width: 400px;
+    background: white;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.filter-option {
+    padding: 20px;
+    border-bottom: 1px #333 solid;
+    display: flex;
+    justify-content: space-around;
+}
+
+.clear-filter-btn {
+    background: #eee;
+    color: #333;
+}
+
+.apply-filter-btn {
+    background: #007bff;
+    color: white;
+}
+
 .create-todo-dialog {
     z-index: 2;
     display: none;
@@ -171,19 +240,21 @@ textarea {
 }
 
 .buttons > div {
-    color: white;
     padding: 20px;
     border-radius: 10px;
     width: 150px;
     text-align: center;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .save-btn {
+    color: white;
     background: #007bff;
 }
 
 .discard-btn {
+    color: white;
     background: #dc3545;
 }
 

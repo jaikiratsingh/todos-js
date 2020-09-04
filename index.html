@@ -24,15 +24,79 @@
         </span>
     </div>
 
+    <div class="filter-todos-button">
+        <span class="material-icons filter-todos-icon">
+            filter_alt
+        </span>
+    </div>
+
     <div class="todo-list"></div>
 
     <div class="create-todo-dialog">
         <input type="text" class="create-todo-title" placeholder="Todo Title">
         <hr>
+        <div class="todo-options">
+            <div class="todo-option priority-options">
+                <span class="material-icons">
+                    flag
+                </span>
+                <select class="priority-choices">
+                    <option value="NO_PRIORITY">No Priority</option>
+                    <option value="LOW_PRIORITY">Low Priority</option>
+                    <option value="MEDIUM_PRIORITY">Medium Priority</option>
+                    <option value="HIGH_PRIORITY">High Priority</option>
+                </select>
+            </div>
+
+            <div class="todo-option category-options">
+                <span class="material-icons">
+                    inbox
+                </span>
+                <select class="category-choices">
+                    <option disabled selected value="default"> -- select an option -- </option>
+                    <option value="WORK">Work</option>
+                    <option value="HOBBY">Hobby</option>
+                    <option value="ADMIN">Life Admin</option>
+                </select>
+            </div>
+        </div>
+        <hr>
         <textarea placeholder="Todo Body" class="create-todo-body"></textarea>
         <div class="buttons">
             <div class="save-btn">Save</div>
             <div class="discard-btn">Discard</div>
+        </div>
+    </div>
+
+    <div class="filter-todos-dialog">
+        <div class="filter-options">
+            <div class="filter-option priority-options">
+                <span class="material-icons">
+                    flag
+                </span>
+                <select class="priority-choices">
+                    <option value="NO_PRIORITY">No Priority</option>
+                    <option value="LOW_PRIORITY">Low Priority</option>
+                    <option value="MEDIUM_PRIORITY">Medium Priority</option>
+                    <option value="HIGH_PRIORITY">High Priority</option>
+                </select>
+            </div>
+
+            <div class="filter-option category-options">
+                <span class="material-icons">
+                    inbox
+                </span>
+                <select class="category-choices">
+                    <option disabled selected value="default"> -- select an option -- </option>
+                    <option value="WORK">Work</option>
+                    <option value="HOBBY">Hobby</option>
+                    <option value="ADMIN">Life Admin</option>
+                </select>
+            </div>
+        </div>
+        <div class="buttons">
+            <div class="apply-filter-btn">Apply Filters</div>
+            <div class="clear-filter-btn">Clear Filters</div>
         </div>
     </div>
 

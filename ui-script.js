@@ -2,12 +2,19 @@ const createTodoWindow = {
     dialog: document.querySelector('.create-todo-dialog'),
     titleInput: document.querySelector('.create-todo-title'),
     bodyArea: document.querySelector('.create-todo-body'),
+    prioritySelect: document.querySelector('.priority-choices'),
+    categorySelect: document.querySelector('.category-choices'),
     saveBtn: document.querySelector('.save-btn'),  // not visible
     discardBtn: document.querySelector('.discard-btn')
 };
 
+const filterTodosWindow = {
+    dialog: document.querySelector('.filter-todos-dialog')
+}
+
 const backDrop = document.querySelector('.backdrop');
 const createTodoBtn = document.querySelector('.create-todo-button');
+const filterTodosBtn = document.querySelector('.filter-todos-button');
 const todoListItem = document.querySelector('.todo-list');
 
 // returns a todo element
@@ -60,37 +67,57 @@ function closeCreateTodoDialog() {
     createTodoWindow.dialog.style.display = 'none';
 }
 
+// opens the dialog for filtering todos
+function openFilterTodosDialog() {
+    backDrop.style.display = 'block';
+    filterTodosWindow.dialog.style.display = 'block';
+}
+
+// closes the dialog for filtering todos
+function closeFilterTodosDialog() {
+    backDrop.style.display = 'none';
+    filterTodosWindow.dialog.style.display = 'none';
+}
+
 // gets form information and returns as an object
 function getFormInfo() {
-    const title = createTodoWindow.titleInput.value || undefined;
-    const body = createTodoWindow.bodyArea.value || undefined;
+    const title = createTodoWindow.titleInput.value;
+    const body = createTodoWindow.bodyArea.value;
+    const category = createTodoWindow.categorySelect.value;
+    const priority = createTodoWindow.prioritySelect.value;
 
     if(!title) {
         throw new Error("Empty Todo Title");
     }
         
-    return new Todo(title, body);
+    return new Todo(title, body, priority, category);
 }
 
 // clear the contents of the form
 function clearForm() {
     createTodoWindow.titleInput.value = '';
     createTodoWindow.bodyArea.value = '';
+    createTodoWindow.prioritySelect.value = priorities.NO;
+    createTodoWindow.categorySelect.value = 'default';
 }
 
 // performs the actions to save the todo
 function saveTodoElement() {    // TODO: Find a better name for this
-    const todo = getFormInfo();
-    createTodo(todo)
-        .then(_ => {
-            closeCreateTodoDialog();
-        })
-        .catch(_ => {
-            alert(e.message);
-        })
-        .finally(_ => {
-            getTodosAndDisplay();
-        });
+    try {
+        const todo = getFormInfo();
+        createTodo(todo)
+            .then(_ => {
+                closeCreateTodoDialog();
+            })
+            .catch(_ => {
+                alert(e.message);
+            })
+            .finally(_ => {
+                getTodosAndDisplay();
+            });
+    }catch(e) {
+        alert(e.message);
+    }
 }
 
 // performs the actions to delete a todo based on it's id
@@ -135,7 +162,11 @@ function handleTodoListClick(event) {
 
 getTodosAndDisplay();
 createTodoBtn.addEventListener('click', openCreateTodoDialog);
+filterTodosBtn.addEventListener('click', openFilterTodosDialog);
 createTodoWindow.saveBtn.addEventListener('click', saveTodoElement);
 createTodoWindow.discardBtn.addEventListener('click', closeCreateTodoDialog);
-backDrop.addEventListener('click', closeCreateTodoDialog);
+backDrop.addEventListener('click', () => {
+    closeCreateTodoDialog();
+    closeFilterTodosDialog();
+});
 todoListItem.addEventListener('click', handleTodoListClick)

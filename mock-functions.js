@@ -21,31 +21,33 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
             title: 'Go for a jog',
             body: undefined,
             completed: false,
+            priority: 'LOW_PRIORITY',
+            category: 'ADMIN'
         },
         {
             id: uuid(),
             title: 'Read Novel',
             body: undefined,
-            completed: true
+            completed: true,
+            priority: 'LOW_PRIORITY',
+            category: 'ADMIN'
         },
         {
             id: uuid(),
             title: 'Attend Morning Meeting',
             body: undefined,
-            completed: false
+            completed: false,
+            priority: 'HIGH_PRIORITY',
+            category: 'WORK'
         },
         {
             id: uuid(),
-            title: 'Have breakfast',
+            title: 'Go to the bank',
             body: undefined,
-            completed: false
+            completed: false,
+            priority: 'MEDIUM_PRIORITY',
+            category: 'ADMIN'
         },
-        {
-            id: uuid(),
-            title: 'Have Lunch',
-            body: undefined,
-            completed: false
-        }
     ];
     const MAX_DELAY = 500;
     const getRandomTime = () => Math.floor(Math.random()*MAX_DELAY);
