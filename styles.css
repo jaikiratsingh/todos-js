@@ -119,6 +119,25 @@ select {
     padding: 0 20px;
 }
 
+.priority-indicator {
+    font-size: 1.2rem;
+    margin-right: 20px;
+    font-style: normal !important;
+    font-weight: bold;
+}
+
+.priority-indicator.low {
+    color: blue;
+}
+
+.priority-indicator.medium {
+    color: orange;
+}
+
+.priority-indicator.high {
+    color: red;
+}
+
 .edit-btn, .trash-btn {
     padding: 0 10px;
     padding: 1rem;
