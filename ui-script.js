@@ -56,8 +56,39 @@ function createTodoElement(todo) {
     return todoElement;
 }
 
+// get order according to priority
+function getOrderPriority(priority) {
+    switch(priority) {
+        case priorities.LOW :
+            return 1;
+        case priorities.MEDIUM :
+            return 2;
+        case priorities.HIGH :
+            return 3;
+        default :
+            return 0;
+    }
+}
+
+// Compare 2 todos for order in the list
+function compareTodos(todoOne, todoTwo) {
+    if((todoOne.completed ^ todoTwo.completed) == 1) {  // check if one of the two has completed as true
+        if(todoOne.completed) {
+            return 1;
+        }else {
+            return -1;
+        }
+    }else {
+        const orderOne = getOrderPriority(todoOne.priority);
+        const orderTwo = getOrderPriority(todoTwo.priority);
+
+        return orderTwo - orderOne;
+    }
+}
+
 // display todos
 function displayTodos(todos) {
+    todos.sort(compareTodos);
     const todoList = document.querySelector('.todo-list');
     todoList.innerHTML = '';    // TODO: find a better way to do this
     todos.forEach(todo => {
