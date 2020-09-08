@@ -30,7 +30,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
             body: undefined,
             completed: true,
             priority: 'LOW_PRIORITY',
-            category: 'ADMIN'
+            category: 'HOBBY'
         },
         {
             id: uuid(),

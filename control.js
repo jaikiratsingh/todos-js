@@ -12,6 +12,12 @@ function getTodosAndDisplay() {
         });
 }
 
+// apply filters to todos and display them
+function applyFiltersAndDisplay() {
+    const filteredTodos = getFilteredTodos(todos);   // from state
+    displayTodos(filteredTodos);
+}
+
 // performs the actions to delete a todo based on it's id
 function deleteTodoElement(todoID) {
     deleteTodo(todoID)

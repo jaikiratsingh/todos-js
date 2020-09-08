@@ -40,16 +40,27 @@ function compareTodos(todoOne, todoTwo) {
 
 // apply filters to todos
 function getFilteredTodos(todos) {
-    let filteredTodos = todos;
-    const selectedPriorityFilterValue = filters.priorityFilter;
-    const selectedCategoryFilterValue = filters.categoryFilter;
+    let filteredTodos = [...todos];
+    const {pattern, todoStatus, priorityFilter, categoryFilter} = filters;
+    
+    filteredTodos = findMatchesTodo(pattern, filteredTodos);   // filtering according to search pattern
+    filteredTodos = filteredTodos.filter(todo => {
+        switch(todoStatus) {
+            case todoStatuses.NO :
+                return  true;
+            case todoStatuses.PENDING :
+                return todo.completed === false;
+            case todoStatuses.COMPLETED :
+                return todo.completed === true;
+        }
+    });
 
-    if(selectedPriorityFilterValue !== priorities.NO) {
-        filteredTodos = filteredTodos.filter(todo => todo.priority === selectedPriorityFilterValue);
+    if(priorityFilter !== priorities.NO) {
+        filteredTodos = filteredTodos.filter(todo => todo.priority === priorityFilter);
     }
 
-    if(selectedCategoryFilterValue !== categories.NO) {
-        filteredTodos = filteredTodos.filter(todo => todo.category === selectedCategoryFilterValue);
+    if(categoryFilter !== categories.NO) {
+        filteredTodos = filteredTodos.filter(todo => todo.category === categoryFilter);
     }
 
     return filteredTodos;

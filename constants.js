@@ -1,3 +1,13 @@
+// Acts as the Global State
+
+// todo status options
+const todoStatuses = {
+    NO: 'default',
+    PENDING: 'PENDING',
+    COMPLETED: 'COMPLETED',
+    DELETED: 'DELETETED'
+}
+
 // priority options
 const priorities = {
     NO : 'NO_PRIORITY',

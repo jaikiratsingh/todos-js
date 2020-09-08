@@ -1,5 +1,5 @@
 const createTodoWindow = {
-    dialog: document.querySelector('.create-todo-dialog'),
+    dialog: document.querySelector('.create-todo'),
     titleInput: document.querySelector('.create-todo-title'),
     bodyArea: document.querySelector('.create-todo-body'),
     prioritySelect: document.querySelector('.todo-options .priority-choices'),
@@ -9,17 +9,15 @@ const createTodoWindow = {
 };
 
 const filterTodosWindow = {
-    dialog: document.querySelector('.filter-todos-dialog'),
-    prioritySelect: document.querySelector('.filter-options .priority-choices'),
-    categorySelect: document.querySelector('.filter-options .category-choices'),
-    applyFiltersBtn: document.querySelector('.apply-filter-btn'),
+    searchBarInput: document.querySelector('.searchbar input'),
+    filterStatusPanel: document.querySelector('.filter-options__section--2'),
+    prioritySelect: document.querySelector('.filter-option__select--priority'),
+    categorySelect: document.querySelector('.filter-option__select--category'),
     clearFiltersBtn: document.querySelector('.clear-filter-btn')
 }
 
-const searchBarInput = document.querySelector('.searchbar input');
 const backDrop = document.querySelector('.backdrop');
-const createTodoBtn = document.querySelector('.create-todo-button');
-const filterTodosBtn = document.querySelector('.filter-todos-button');
+const createTodoBtn = document.querySelector('.create-todo-btn');
 const todoListItem = document.querySelector('.todo-list');
 
 // returns a todo element
@@ -29,9 +27,11 @@ function createTodoElement(todo) {
     if(todo.completed) {
         todoElement.classList.add('completed');
     }
+    todoElement.setAttribute('data-todo-status', todo.completed ? todoStatuses.COMPLETED : todoStatuses.PENDING);
     todoElement.setAttribute('data-todo-id', todo.id);
 
     let priorityIndicatorHTML;
+    let categoryIndicatorHTML;
     switch(todo.priority) {
         case priorities.NO :
             priorityIndicatorHTML = '';
@@ -47,8 +47,24 @@ function createTodoElement(todo) {
             break;
     }
 
+    switch(todo.category) {
+        case categories.NO :
+            categoryIndicatorHTML = '';
+            break;
+        case categories.WORK :
+            categoryIndicatorHTML = '<span class="category-indicator">work</span>';
+            break;
+        case categories.HOBBY :
+            categoryIndicatorHTML = '<span class="category-indicator">hobby</span>';
+            break;
+        case categories.ADMIN :
+            categoryIndicatorHTML = '<span class="category-indicator">admin</span>';
+            break;
+    }
+
     todoElement.innerHTML = `
         <div class="todo-content">${todo.title}</div>
+        ${categoryIndicatorHTML}
         ${priorityIndicatorHTML}
         <span class="material-icons trash-btn">delete</span>
     `;
@@ -69,9 +85,12 @@ function displayTodos(todos) {
 
 // clear the contents of the filter dialog
 function clearFilterForm() {
-    searchBarInput.value = "";
+    Array.from(filterTodosWindow.filterStatusPanel.children).forEach(filterOption => {
+        filterOption.classList.remove('filter-option--selected');
+    });
+    filterTodosWindow.searchBarInput.value = "";
     filterTodosWindow.prioritySelect.value = priorities.NO;
-    filterTodosWindow.categorySelect.value = 'default';
+    filterTodosWindow.categorySelect.value = categories.NO;
 }
 
 // gets form information and returns as an object
@@ -97,16 +116,87 @@ function clearCreateTodosForm() {
 }
 
 // handles the search pattern of the search bar
-function searchPatternHandler() {
+function searchbarValueChangedHandler() {
     const patternToMatch = this.value;
-    console.log(patternToMatch);
+    filters = {...filters, pattern: patternToMatch};   // update state
+    
+    applyFiltersAndDisplay();
+}
 
-    const filteredTodos = getFilteredTodos(todos);
-    const matchedTodos = findMatchesTodo(patternToMatch, filteredTodos);
+// handle the filter status changed
+function filterStatusClickHandler(event) {
+    const filterOptionClicked = event.target.closest('.filter-option');
+    if(!filterOptionClicked) {
+        return ;
+    }
 
-    console.log(matchedTodos);
+    if(!this.contains(filterOptionClicked)) {
+        throw new Error("Something unexpected has happened here");
+    }
 
-    displayTodos(matchedTodos);
+    Array.from(this.children).forEach(filterOption => {
+        if(filterOption === filterOptionClicked) {
+            return ;
+        }
+
+        filterOption.classList.remove('filter-option--selected');
+    });
+
+    filterOptionClicked.classList.toggle('filter-option--selected');
+    
+    let filterStatus = todoStatuses.NO;
+
+    if(filterOptionClicked.classList.contains('filter-option--selected')) {
+        filterStatus = filterOptionClicked.getAttribute('data-filter-status');
+    }
+
+    // set filter state
+    filters = {
+        ...filters,
+        todoStatus: filterStatus,
+    };
+
+    applyFiltersAndDisplay();
+}
+
+// handle the change event in priority select filter
+function prioritySelectValueChangedHandler() {
+    const prioritySelected = this.value;
+
+    // update state
+    filters = {
+        ...filters,
+        priorityFilter: prioritySelected
+    }
+
+    applyFiltersAndDisplay();
+}
+
+// handle the change event in category select filter
+function categorySelectValueChangedHandler() {
+    const categorySelected = this.value;
+
+    // update state
+    filters = {
+        ...filters,
+        categoryFilter: categorySelected
+    };
+
+    applyFiltersAndDisplay();
+}
+
+// handler to clear applied filters
+function clearFiltersHandler() {
+    // reset state
+    filters = {
+        pattern: '',
+        todoStatus: todoStatuses.NO,
+        priorityFilter: priorities.NO,
+        categoryFilter: categories.NO
+    };
+
+    clearFilterForm();
+    applyFiltersAndDisplay();
 }
 
 // function to open the todo dialog
@@ -120,18 +210,6 @@ function openCreateTodoDialog() {
 function closeCreateTodoDialog() {
     backDrop.style.display = 'none';
     createTodoWindow.dialog.style.display = 'none';
-}
-
-// opens the dialog for filtering todos
-function openFilterTodosDialog() {
-    backDrop.style.display = 'block';
-    filterTodosWindow.dialog.style.display = 'block';
-}
-
-// closes the dialog for filtering todos
-function closeFilterTodosDialog() {
-    backDrop.style.display = 'none';
-    filterTodosWindow.dialog.style.display = 'none';
 }
 
 // performs the actions to save the todo
@@ -169,46 +247,24 @@ function handleTodoListClick(event) {
     }
 }
 
-// handler to apply filters
-function applyFiltersHandler() {
-    // update state
-    filters = {
-        priorityFilter: filterTodosWindow.prioritySelect.value,
-        categoryFilter: filterTodosWindow.categorySelect.value,
-    };
-
-    const filteredTodos = getFilteredTodos(todos);
-
-    displayTodos(filteredTodos);
-    closeFilterTodosDialog();
-}
-
-// handler to clear applied filters
-function clearFiltersHandler() {
-    filters = {
-        priorityFilter: priorities.NO,
-        categoryFilter: categories.NO
-    }
-    clearFilterForm();
-    displayTodos(todos);
-}
-
 getTodosAndDisplay();
 
-searchBarInput.addEventListener('keyup', searchPatternHandler);
+filterTodosWindow.searchBarInput.addEventListener('keyup', searchbarValueChangedHandler);
+filterTodosWindow.filterStatusPanel.addEventListener('click', filterStatusClickHandler);
+filterTodosWindow.prioritySelect.addEventListener('change', prioritySelectValueChangedHandler);
+filterTodosWindow.categorySelect.addEventListener('change', categorySelectValueChangedHandler);
+filterTodosWindow.clearFiltersBtn.addEventListener('click', clearFiltersHandler);
 
 createTodoBtn.addEventListener('click', openCreateTodoDialog);
-filterTodosBtn.addEventListener('click', openFilterTodosDialog);
 
 createTodoWindow.saveBtn.addEventListener('click', saveTodoElement);
 createTodoWindow.discardBtn.addEventListener('click', closeCreateTodoDialog);
 
 todoListItem.addEventListener('click', handleTodoListClick);
 
-filterTodosWindow.applyFiltersBtn.addEventListener('click', applyFiltersHandler);
-filterTodosWindow.clearFiltersBtn.addEventListener('click', clearFiltersHandler);
+
 
 backDrop.addEventListener('click', () => {
     closeCreateTodoDialog();
-    closeFilterTodosDialog();
+    // closeFilterTodosDialog();
 });
