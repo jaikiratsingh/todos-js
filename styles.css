@@ -3,17 +3,78 @@
     padding: 0;
     margin: 0;
     font-family: sans-serif;
-    --primary-color: #FF6F00;
-    --secondary-color: rgb(9, 182, 9);
+    --primary-color: #168bfb;
+    --secondary-color: #cae4fb;
 }
 
 body {
     min-height: 100vh;
-    background: #eee;
+    background: #f5f8fa;
     height: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.container__panel--1 {
+    height: 100vh;
+    width: 400px;
+    background: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+}
+
+.filter-options__wrapper {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-option__select {
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    padding: 5px;
+}
+
+.filter-option {
+    padding: 20px 0;
+    width: 100%;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.filter-options__section--2 .filter-option:hover {
+    cursor: pointer;
+    background: #edf5fc;
+    border-radius: 7px;
+}
+
+.filter-options__section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.section-divider {
+    width: 100%;
+    margin: 50px 0;
+}
+
+.container__panel--2 {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 100%;
 }
 
 .backdrop {
@@ -31,16 +92,14 @@ body {
 .searchbar {
     border: #333 solid 1px;
     background: #fff;
-    border-radius: 7;
-    margin-top: 50px;
-    width: 50%;
-    min-width: 50%;
+    margin-top: 100px;
+    width: 100%;
     display: flex;
     align-items: center;
     padding: 0 10px;
 }
 
-.icon-search {
+.searchbar__icon {
     color: #ccc;
     font-size: 30px;
 }
@@ -65,20 +124,71 @@ textarea {
     flex: 1;
 }
 
+.highlight {
+    font-size: 3rem;
+    padding: 50px 0 50px 0;
+    width: 90%;
+    font-weight: 500;
+}
+
+.subtext {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.logo {
+    background: var(--primary-color);
+    color: white;
+    font-weight: bold;
+    padding: 3px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+hr {
+    width: 100%;
+    color: #dbdbdb;
+}
+
 .todo-list {
-    width: 50%;
-    min-width: 50%;
-    border: #333 solid 1px;
-    background: #fff;
+    width: 90%;
+    min-width: 80%;
 }
 
 .todo {
-    border-bottom: solid 1px black;
+    border-bottom: solid 1px #ccc;
     font-size: 1.2rem;
+    /* padding: 1rem; */
     display: flex;
     align-items: center;
     outline: none;
     cursor: pointer;
+    margin: 10px 0;
+    border-radius: 7px;
+}
+
+.todo:hover {
+    background: var(--secondary-color);
+    color: black;
+}
+
+.trash-btn {
+    padding: 1rem;
+    border: none;
+    border-radius: 7px;
+    /* background: var(--primary-color); */
+}
+
+.trash-btn:hover {
+    background: var(--primary-color);
+}
+
+.completed:before {
+    content: ''
 }
 
 .todo-options {
@@ -94,24 +204,14 @@ textarea {
     align-items: center;
 }
 
-select {
-    margin: 0 10px;
-    outline: none;
-    font-size: 16px;
-}
-
 .completed {
-    background: rgb(75, 129, 232);
+    background: var(--primary-color);
     color: white;
     font-style: italic;
 }
 
 .completed .todo-content {
     text-decoration: line-through;
-}
-
-.todo:hover {
-    box-shadow: 5px 5px 10px;
 }
 
 .todo-content {
@@ -121,9 +221,10 @@ select {
 
 .priority-indicator {
     font-size: 1.2rem;
-    margin-right: 20px;
     font-style: normal !important;
     font-weight: bold;
+    width: 25px;
+    text-align: center;
 }
 
 .priority-indicator.low {
@@ -138,25 +239,20 @@ select {
     color: red;
 }
 
-.edit-btn, .trash-btn {
-    padding: 0 10px;
-    padding: 1rem;
-    border: none;
+.category-indicator {
+    font-size: 0.7rem;
+    padding: 0.4rem;
+    background: #dbdbdb;
+    border-radius: 7px;
+    color: #000;
+    width: 50px;
+    text-align: center;
+    margin-right: 20px;
+    font-style: normal !important;
+    font-weight: bold;
 }
 
-.trash-btn {
-    background: var(--primary-color);
-}
-
-.edit-btn {
-    background: var(--secondary-color);
-}
-
-.todo:last-child {
-    border: none;
-}
-
-.create-todo-button {
+.create-todo-btn {
     background: #fff;
     border: #333 solid 1px;
     border-radius: 50%;
@@ -165,67 +261,42 @@ select {
     bottom: 100px;
     right: 100px;
 }
-.create-todo-button:hover {
+.create-todo-btn:hover {
     border: var(--primary-color) solid 1px;
     color: var(--primary-color);
     box-shadow: 5px 5px 5px #ccc;
 }
 
-.create-todos-icon {
+.create-todos-btn__icon {
     padding: 10px;
-}
-
-.filter-todos-button {
-    background: #fff;
-    border: #333 solid 1px;
-    border-radius: 50%;
-    position: fixed;
-    cursor: pointer;
-    bottom: 100px;
-    left: 100px;
-}
-
-.filter-todos-button:hover {
-    border: var(--primary-color) solid 1px;
-    color: var(--primary-color);
-    box-shadow: 5px 5px 5px #ccc;
 }
 
 .filter-todos-icon {
     padding: 10px;
 }
 
-.filter-todos-dialog {
-    z-index: 2;
-    display: none;
-    border-radius: 20px;
-    border: 1px #333 solid;
-    width: 400px;
-    background: white;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+.filter-option__icon {
+    margin-right: 20px;
 }
 
-.filter-option {
-    padding: 20px;
-    border-bottom: 1px #333 solid;
-    display: flex;
-    justify-content: space-around;
+.filter-option--selected {
+    background: #edf5fc;
+    border-radius: 7px;
+    transform: scale(1.1);
 }
 
 .clear-filter-btn {
-    background: #eee;
-    color: #333;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.apply-filter-btn {
-    background: #007bff;
-    color: white;
-}
-
-.create-todo-dialog {
+.create-todo {
     z-index: 2;
     display: none;
     border-radius: 20px 20px 0 0;
@@ -251,17 +322,23 @@ select {
     margin: 10px auto;
 }
 
+.todo-option > select {
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    padding: 5px;
+}
+
 .buttons {
     display: flex;
     justify-content: space-around;
-    padding: 20px 0;
-    border-top: solid 1px #333;
 }
 
 .buttons > div {
     padding: 20px;
     border-radius: 10px;
-    width: 150px;
+    width: 300px;
+    margin-bottom: 50px;
     text-align: center;
     font-weight: bold;
     cursor: pointer;
@@ -276,4 +353,3 @@ select {
     color: white;
     background: #dc3545;
 }
-
