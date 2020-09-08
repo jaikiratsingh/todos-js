@@ -1,3 +1,5 @@
+import {uuid} from './mock-functions.js'
+
 // constructor function for a todo
 function Todo(title, body, priority = priorities.NO_PRIORITY, category) {
     this.id = uuid(),
@@ -6,6 +8,30 @@ function Todo(title, body, priority = priorities.NO_PRIORITY, category) {
     this.priority = priority;
     this.completed = false;
     this.category = category;
+}
+
+// todo status options
+const todoStatuses = {
+    NO: 'default',
+    PENDING: 'PENDING',
+    COMPLETED: 'COMPLETED',
+    DELETED: 'DELETETED'
+}
+
+// priority options
+const priorities = {
+    NO : 'NO_PRIORITY',
+    LOW: 'LOW_PRIORITY',
+    MEDIUM: 'MEDIUM_PRIORITY',
+    HIGH: 'HIGH_PRIORITY'
+}
+
+// category options
+const categories = {
+    NO: 'default',
+    WORK: 'WORK',
+    HOBBY: 'HOBBY',
+    ADMIN: 'ADMIN',
 }
 
 // get order according to priority
@@ -22,7 +48,6 @@ function getOrderPriority(priority) {
     }
 }
 
-// Compare 2 todos for order in the list
 function compareTodos(todoOne, todoTwo) {
     if((todoOne.completed ^ todoTwo.completed) == 1) {  // check if one of the two has completed as true
         if(todoOne.completed) {
@@ -38,36 +63,11 @@ function compareTodos(todoOne, todoTwo) {
     }
 }
 
-// apply filters to todos
-function getFilteredTodos(todos) {
-    let filteredTodos = [...todos];
-    const {pattern, todoStatus, priorityFilter, categoryFilter} = filters;
-    
-    filteredTodos = findMatchesTodo(pattern, filteredTodos);   // filtering according to search pattern
-    filteredTodos = filteredTodos.filter(todo => {
-        switch(todoStatus) {
-            case todoStatuses.NO :
-                return  true;
-            case todoStatuses.PENDING :
-                return todo.completed === false;
-            case todoStatuses.COMPLETED :
-                return todo.completed === true;
-        }
-    });
-
-    if(priorityFilter !== priorities.NO) {
-        filteredTodos = filteredTodos.filter(todo => todo.priority === priorityFilter);
-    }
-
-    if(categoryFilter !== categories.NO) {
-        filteredTodos = filteredTodos.filter(todo => todo.category === categoryFilter);
-    }
-
-    return filteredTodos;
-}
-
 // find matching todos according to regex
 function findMatchesTodo(todoTitlePattern, todos) {
     const regex = new RegExp(todoTitlePattern, 'gi');
     return todos.filter(todo => todo.title.match(regex));
 }
+
+
+export {Todo, compareTodos, findMatchesTodo, todoStatuses, priorities, categories};
