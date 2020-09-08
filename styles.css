@@ -162,12 +162,12 @@ hr {
 .todo {
     border-bottom: solid 1px #ccc;
     font-size: 1.2rem;
-    /* padding: 1rem; */
+    padding: 0.2rem;
     display: flex;
     align-items: center;
     outline: none;
     cursor: pointer;
-    margin: 10px 0;
+    /* margin: 10px 0; */
     border-radius: 7px;
 }
 

@@ -145,3 +145,5 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
 
     return [createTodo, readTodos, updateTodo, deleteTodo];
 })();
+
+export {uuid, createTodo, readTodos, updateTodo, deleteTodo};
