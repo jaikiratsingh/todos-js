@@ -2,28 +2,15 @@ import {findMatchesTodo, todoStatuses, priorities, categories} from './todo-mode
 
 // apply filters to todos
 function getFilteredTodos(todos, filters) {
-    let filteredTodos = [...todos]; // TODO: make a deep copy here
     const {pattern, todoStatus, priorityFilter, categoryFilter} = filters;
-    
-    filteredTodos = findMatchesTodo(pattern, filteredTodos);   // filtering according to search pattern
-    filteredTodos = filteredTodos.filter(todo => {
-        switch(todoStatus) {
-            case todoStatuses.NO :
-                return  true;
-            case todoStatuses.PENDING :
-                return todo.completed === false;
-            case todoStatuses.COMPLETED :
-                return todo.completed === true;
-        }
-    });
-
-    if(priorityFilter !== priorities.NO) {
-        filteredTodos = filteredTodos.filter(todo => todo.priority === priorityFilter);
-    }
-
-    if(categoryFilter !== categories.NO) {
-        filteredTodos = filteredTodos.filter(todo => todo.category === categoryFilter);
-    }
+    const filteredTodos = todos
+                            .filter(todo => todo.title.match(new RegExp(pattern, 'gi')))
+                            .filter(todo => (
+                                (todoStatus === todoStatuses.DEFAULT) || 
+                                (todoStatus === todoStatuses.PENDING && todo.completed === false) || 
+                                (todoStatus === todoStatuses.COMPLETED && todo.completed === true)))
+                            .filter(todo => (priorityFilter.key === priorities.DEFAULT.key || todo.priority === priorityFilter.key))
+                            .filter(todo => (categoryFilter.key === categories.DEFAULT.key || todo.category === priorityFilter.key));
 
     return filteredTodos;
 }

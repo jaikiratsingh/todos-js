@@ -6,7 +6,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="script.js"></script>
     <title>Todo App</title>
 </head>
 <body>
@@ -53,10 +52,10 @@
                             flag
                         </span>
                         <select class="filter-option__select filter-option__select--priority">
-                            <option disabled selected value="NO_PRIORITY">No Priority</option>
-                            <option value="LOW_PRIORITY">Low Priority</option>
-                            <option value="MEDIUM_PRIORITY">Medium Priority</option>
-                            <option value="HIGH_PRIORITY">High Priority</option>
+                            <option disabled selected value="DEFAULT">No Priority</option>
+                            <option value="LOW">Low Priority</option>
+                            <option value="MEDIUM">Medium Priority</option>
+                            <option value="HIGH">High Priority</option>
                         </select>
                     </div>
 
@@ -65,7 +64,7 @@
                             inbox
                         </span>
                         <select class="filter-option__select filter-option__select--category">
-                            <option disabled selected value="default"> -- select a category -- </option>
+                            <option disabled selected value="DEFAULT"> -- select a category -- </option>
                             <option value="WORK">Work</option>
                             <option value="HOBBY">Hobby</option>
                             <option value="ADMIN">Life Admin</option>
@@ -79,8 +78,8 @@
         </div>
 
         <div class="container__panel--2">
-            <div class="highlight">
-                Todoist
+            <div class="header">
+                <div class="highlight">Todoist</div>
                 <div class="subtext">
                     <span class="logo material-icons">
                         done
@@ -109,10 +108,10 @@
                     flag
                 </span>
                 <select class="priority-choices">
-                    <option disabled selected value="NO_PRIORITY">No Priority</option>
-                    <option value="LOW_PRIORITY">Low Priority</option>
-                    <option value="MEDIUM_PRIORITY">Medium Priority</option>
-                    <option value="HIGH_PRIORITY">High Priority</option>
+                    <option disabled selected value="DEFAULT">No Priority</option>
+                    <option value="LOW">Low Priority</option>
+                    <option value="MEDIUM">Medium Priority</option>
+                    <option value="HIGH">High Priority</option>
                 </select>
             </div>
 
@@ -121,7 +120,7 @@
                     inbox
                 </span>
                 <select class="category-choices">
-                    <option disabled selected value="default"> -- select an option -- </option>
+                    <option disabled selected value="DEFAULT"> -- select an option -- </option>
                     <option value="WORK">Work</option>
                     <option value="HOBBY">Hobby</option>
                     <option value="ADMIN">Life Admin</option>
@@ -135,7 +134,8 @@
             <div class="discard-btn">Discard</div>
         </div>
     </div>
-
+    
+    <script src="script.js"></script>
     <!-- <script src="mock-functions.js"></script>
     <script src="constants.js"></script>
     <script src="state.js"></script>

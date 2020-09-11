@@ -1,5 +1,7 @@
 // Mocks the functionalities of some popular functions
 
+// TODO: Remove IIFE and take todos [] to global (module)
+
 // mocks the uuid() functions
 const uuid = (function() {
     let uid = 0;
@@ -21,7 +23,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
             title: 'Go for a jog',
             body: undefined,
             completed: false,
-            priority: 'LOW_PRIORITY',
+            priority: 'LOW',
             category: 'ADMIN'
         },
         {
@@ -29,7 +31,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
             title: 'Read Novel',
             body: undefined,
             completed: true,
-            priority: 'LOW_PRIORITY',
+            priority: 'LOW',
             category: 'HOBBY'
         },
         {
@@ -37,7 +39,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
             title: 'Attend Morning Meeting',
             body: undefined,
             completed: false,
-            priority: 'HIGH_PRIORITY',
+            priority: 'HIGH',
             category: 'WORK'
         },
         {
@@ -45,7 +47,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
             title: 'Go to the bank',
             body: undefined,
             completed: false,
-            priority: 'MEDIUM_PRIORITY',
+            priority: 'MEDIUM',
             category: 'ADMIN'
         },
     ];
@@ -94,6 +96,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
     }
 
     // TODO: add functionality for updating title and body as well
+    // if update todo fails, create
     function updateTodo(todoID, updateObject) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
