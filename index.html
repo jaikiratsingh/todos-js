@@ -9,14 +9,14 @@
     <title>Todo App</title>
 </head>
 <body>
-    <div class="backdrop"></div>
+    <div id="backdrop" class="backdrop"></div>
 
     <div class="container">
         <div class="container__panel--1">
             <div class="filter-options__wrapper">
                 <div class="filter-options__section filter-options__section--1">
                     <div class="searchbar">
-                        <input type="text" placeholder="Search existing Todos">
+                        <input id="searchbar__input" type="text" placeholder="Search existing Todos">
                         <span class="material-icons searchbar__icon">
                             search
                         </span>
@@ -24,20 +24,20 @@
                 </div>
                 <hr class="section-divider">
 
-                <div class="filter-options__section filter-options__section--2">
-                    <div class="filter-option" data-filter-status='PENDING'>
+                <div id="filter-status-panel" class="filter-options__section filter-options__section--2">
+                    <div class="filter-option" data-type="filter-option" data-filter-status='PENDING'>
                         <span class="filter-option__icon material-icons">
                             pending_actions
                         </span>
                         Pending Todos
                     </div>
-                    <div class="filter-option" data-filter-status='COMPLETED'>
+                    <div class="filter-option" data-type="filter-option" data-filter-status='COMPLETED'>
                         <span class="filter-option__icon material-icons">
                             done
                         </span>
                         Complete Todos
                     </div>
-                    <div class="filter-option" data-filter-status='DELETED'>
+                    <div class="filter-option" data-type="filter-option" data-filter-status='DELETED'>
                         <span class="filter-option__icon material-icons">
                             delete
                         </span>
@@ -51,7 +51,7 @@
                         <span class="filter-option__icon material-icons">
                             flag
                         </span>
-                        <select class="filter-option__select filter-option__select--priority">
+                        <select id="filter-select-priority" class="filter-option__select filter-option__select--priority">
                             <option disabled selected value="DEFAULT">No Priority</option>
                             <option value="LOW">Low Priority</option>
                             <option value="MEDIUM">Medium Priority</option>
@@ -63,7 +63,7 @@
                         <span class="filter-option__icon material-icons">
                             inbox
                         </span>
-                        <select class="filter-option__select filter-option__select--category">
+                        <select id="filter-select-category" class="filter-option__select filter-option__select--category">
                             <option disabled selected value="DEFAULT"> -- select a category -- </option>
                             <option value="WORK">Work</option>
                             <option value="HOBBY">Hobby</option>
@@ -73,7 +73,7 @@
                 </div>
                 <hr class="section-divider">
 
-                <div class="clear-filter-btn">Clear All Filters</div>
+                <div id="clear-filter-btn" class="clear-filter-btn">Clear All Filters</div>
             </div>
         </div>
 
@@ -89,25 +89,25 @@
             </div>
 
             <hr>
-            <div class="todo-list"></div>
+            <div id="todo-list" class="todo-list"></div>
         </div>
     </div>
 
-    <div class="create-todo-btn">
+    <div id="create-todo-btn" class="create-todo-btn">
         <span class="material-icons create-todos-btn__icon">
             create
         </span>
     </div>
 
-    <div class="create-todo">
-        <input type="text" class="create-todo-title" placeholder="Todo Title">
+    <div id="create-todo-dialog" class="create-todo">
+        <input type="text" id="create-todo-title" class="create-todo-title" placeholder="Todo Title">
         <hr>
         <div class="todo-options">
             <div class="todo-option priority-options">
                 <span class="material-icons">
                     flag
                 </span>
-                <select class="priority-choices">
+                <select id="create-todo-priority-choices" class="priority-choices">
                     <option disabled selected value="DEFAULT">No Priority</option>
                     <option value="LOW">Low Priority</option>
                     <option value="MEDIUM">Medium Priority</option>
@@ -119,7 +119,7 @@
                 <span class="material-icons">
                     inbox
                 </span>
-                <select class="category-choices">
+                <select id="create-todo-category-choices" class="category-choices">
                     <option disabled selected value="DEFAULT"> -- select an option -- </option>
                     <option value="WORK">Work</option>
                     <option value="HOBBY">Hobby</option>
@@ -128,10 +128,10 @@
             </div>
         </div>
         <hr>
-        <textarea placeholder="Todo Body" class="create-todo-body"></textarea>
+        <textarea id="create-todo-body" placeholder="Todo Body" class="create-todo-body"></textarea>
         <div class="buttons">
-            <div class="save-btn">Save</div>
-            <div class="discard-btn">Discard</div>
+            <div id="create-todo-save-btn" class="save-btn">Save</div>
+            <div id="create-todo-discard-btn" class="discard-btn">Discard</div>
         </div>
     </div>
     

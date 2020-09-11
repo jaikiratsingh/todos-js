@@ -24,10 +24,10 @@ function TodoAppState() {
     }
 
     this.saveTodoElementHandler = () => {
-        const title = document.querySelector('.create-todo-title').value;
-        const body = document.querySelector('.create-todo-body').value;
-        const category = document.querySelector('.todo-options .category-choices').value;
-        const priority = document.querySelector('.todo-options .priority-choices').value;
+        const title = document.querySelector('#create-todo-title').value;
+        const body = document.querySelector('#create-todo-body').value;
+        const category = document.querySelector('#create-todo-category-choices').value;
+        const priority = document.querySelector('#create-todo-priority-choices').value;
 
         if(!title) {
             throw new Error("Empty Todo Title");
@@ -73,13 +73,13 @@ function TodoAppState() {
     
     // handle click event in todo list
     this.handleTodoListClick = (event) => {
-        const todoElement = event.target.closest('.todo');
-        const todoList = document.querySelector('.todo-list');
+        const todoElement = event.target.closest('div[data-type="todo"]');
+        const todoList = document.querySelector('#todo-list');
         if(!todoElement || !todoList.contains(todoElement)) {
             throw new Error("Something unexpected has happened here");
         }
     
-        if(event.target.classList.contains("trash-btn")) {
+        if(event.target.getAttribute('data-type') === "trash-btn") {
             this.deleteTodoElement(todoElement.getAttribute('data-todo-id'));
         }else {
             this.toggleTodoSelection(todoElement);
@@ -136,7 +136,7 @@ function TodoAppState() {
 
     // handle the filter status changed
     this.filterStatusClickHandler = (event) => {
-        const filterOptionClicked = event.target.closest('.filter-option');
+        const filterOptionClicked = event.target.closest('div[data-type="filter-option"]');
         if(!filterOptionClicked) {
             return ;
         }
@@ -145,7 +145,7 @@ function TodoAppState() {
 
         let filterStatus = todoStatuses.DEFAULT;
 
-        if(filterOptionClicked.classList.contains('filter-option--selected')) {
+        if(filterOptionClicked.hasAttribute('data-filter-selected')) {
             filterStatus = filterOptionClicked.getAttribute('data-filter-status');
         }
 
