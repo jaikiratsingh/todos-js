@@ -11,12 +11,24 @@ function TodoAppState() {
         categoryFilter: categories.DEFAULT
     };
 
+    this.updateTodosState = (todos) => {
+        this.todos = todos;
+        displayTodos(this.todos, this.filters);
+    }
+
+    this.updateFiltersState = (filterUpdateObject) => {
+        this.filters = {
+            ...this.filters,
+            ...filterUpdateObject
+        };
+        displayTodos(this.todos, this.filters);
+    }
+
     this.getTodosAndDisplay = () => {
         readTodos()
         .then(res => res.data)
         .then(todosReceived => {
-            this.todos = todosReceived;
-            displayTodos(this.todos, this.filters);
+            this.updateTodosState(todosReceived);
         })
         .catch(e => {
             alert(e.message);
@@ -50,7 +62,7 @@ function TodoAppState() {
     // performs the actions to delete a todo based on it's id
     this.deleteTodoElement = (todoID) => {
         deleteTodo(todoID)
-            .then(res => {
+            .then(() => {
                 this.getTodosAndDisplay();
             })
             .catch(e => {
@@ -64,7 +76,7 @@ function TodoAppState() {
         const todo = this.todos.find(todo => todo.id === todoID);
         
         updateTodo(todoID, {completed: !todo.completed})
-            .then(res => {
+            .then(() => {
                 this.getTodosAndDisplay();
             }).catch(e => {
                 alert(e.message);
@@ -90,48 +102,30 @@ function TodoAppState() {
     // TODO: Club these 3 into a single handler
     this.searchbarValueChangedHandler = (event) => {
         const patternToMatch = event.target.value;
-        this.filters = {...this.filters, pattern: patternToMatch};
-        
-        displayTodos(this.todos, this.filters);
+        this.updateFiltersState({pattern: patternToMatch});
     }
 
     this.prioritySelectValueChangedHandler = (event) => {
         const prioritySelected = event.target.value;
-    
-        // update state
-        this.filters = {
-            ...this.filters,
-            priorityFilter: priorities[prioritySelected]
-        }
-
-        displayTodos(this.todos, this.filters);
+        this.updateFiltersState({priorityFilter: priorities[prioritySelected]})
     }
 
     // handle the change event in category select filter
     this.categorySelectValueChangedHandler = (event) => {
         const categorySelected = event.target.value;
-
-        // update state
-        this.filters = {
-            ...this.filters,
-            categoryFilter: categories[categorySelected]
-        };
-
-        displayTodos(this.todos, this.filters);
+        this.updateFiltersState({categoryFilter: categories[categorySelected]})
     }
 
     // handler to clear applied filters
     this.clearFiltersHandler = () => {
         // reset state
-        this.filters = {
+        this.updateFiltersState({
             pattern: '',
             todoStatus: todoStatuses.DEFAULT,
             priorityFilter: priorities.DEFAULT,
             categoryFilter: categories.DEFAULT
-        };
-
+        });
         clearFilterForm();
-        displayTodos(this.todos, this.filters);
     }
 
     // handle the filter status changed
@@ -143,19 +137,11 @@ function TodoAppState() {
         
         toggleFilterStatusPanel(event.target);
 
-        let filterStatus = todoStatuses.DEFAULT;
-
-        if(filterOptionClicked.hasAttribute('data-filter-selected')) {
-            filterStatus = filterOptionClicked.getAttribute('data-filter-status');
-        }
-
-        // set filter state
-        this.filters = {
-            ...this.filters,
-            todoStatus: filterStatus,
-        };
-
-        displayTodos(this.todos, this.filters);
+        const filterStatus = (filterOptionClicked.hasAttribute('data-filter-selected')
+                             ? filterOptionClicked.getAttribute('data-filter-status')
+                            : todoStatuses.DEFAULT);
+        
+        this.updateFiltersState({todoStatus: filterStatus});                     
     }
 }
 

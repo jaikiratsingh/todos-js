@@ -21,6 +21,7 @@ function clearFilterForm(priority = priorities.DEFAULT, category = categories.DE
 
     Array.from(filterStatusPanel.children).forEach(filterOption => {
         filterOption.classList.remove('filter-option--selected');
+        filterOption.removeAttribute('data-filter-selected');
     });
     searchBarInput.value = "";
     prioritySelect.value = priority.key;  // TODO: Take default priority as parameter
