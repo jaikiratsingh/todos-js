@@ -16,7 +16,7 @@ function TodoAppState() {
         .then(res => res.data)
         .then(todosReceived => {
             this.todos = todosReceived;
-            displayTodos([...this.todos], {...this.filters});
+            displayTodos(this.todos, this.filters);
         })
         .catch(e => {
             alert(e.message);
@@ -92,7 +92,7 @@ function TodoAppState() {
         const patternToMatch = event.target.value;
         this.filters = {...this.filters, pattern: patternToMatch};
         
-        displayTodos([...this.todos], {...this.filters});
+        displayTodos(this.todos, this.filters);
     }
 
     this.prioritySelectValueChangedHandler = (event) => {
@@ -104,7 +104,7 @@ function TodoAppState() {
             priorityFilter: priorities[prioritySelected]
         }
 
-        displayTodos([...this.todos], {...this.filters});
+        displayTodos(this.todos, this.filters);
     }
 
     // handle the change event in category select filter
@@ -117,7 +117,7 @@ function TodoAppState() {
             categoryFilter: categories[categorySelected]
         };
 
-        displayTodos([...this.todos], {...this.filters});
+        displayTodos(this.todos, this.filters);
     }
 
     // handler to clear applied filters
@@ -131,7 +131,7 @@ function TodoAppState() {
         };
 
         clearFilterForm();
-        displayTodos([...this.todos], {...this.filters});
+        displayTodos(this.todos, this.filters);
     }
 
     // handle the filter status changed
@@ -155,7 +155,7 @@ function TodoAppState() {
             todoStatus: filterStatus,
         };
 
-        displayTodos([...this.todos], {...this.filters});
+        displayTodos(this.todos, this.filters);
     }
 }
 
