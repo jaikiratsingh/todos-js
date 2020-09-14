@@ -1,148 +1,111 @@
-import {clearFilterForm, displayTodos, closeCreateTodoDialog, toggleFilterStatusPanel} from './view-functions.js';
 import {createTodo, readTodos, updateTodo, deleteTodo} from './mock-functions.js';
-import {Todo, todoStatuses, categories, priorities} from './todo-model-functions.js';
+import {Todo, todoStatuses, categories, priorities, compareTodos} from './todo-model-functions.js';
+import { getFilteredTodos } from './filter-functions.js';
+import { FilterPanel } from './View/FilterPanel.js';
+import { TodoList } from './View/TodoList.js';
+import { CreateTodoWindow } from './View/CreateTodoWindow.js';
 
-function TodoAppState() {   
-    this.todos = [];
-    this.filters = {  
-        pattern: '',
-        todoStatus: todoStatuses.DEFAULT,
-        priorityFilter: priorities.DEFAULT,
-        categoryFilter: categories.DEFAULT
-    };
+class TodoAppState {
+    constructor() {
+        this.todos = [];
+        this.filters = {  
+            pattern: '',
+            todoStatus: todoStatuses.DEFAULT,
+            priorityFilter: priorities.DEFAULT,
+            categoryFilter: categories.DEFAULT
+        };
 
-    this.updateTodosState = (todos) => {
+        this.filterPanelHandlers = {
+            filterStatusChangedHandler: this.filterStatusChangedHandler,
+            searchPatternChangedHandler: this.searchPatternChangedHandler,
+            priorityChangedHandler: this.priorityChangedHandler,
+            categoryChangedHandler: this.categoryChangedHandler,
+            clearFiltersHandler: this.clearFiltersHandler
+        };
+
+        this.todoElementHandlers = {
+            deleteTodoHandler: this.deleteTodoHandler,
+            toggleTodoHandler: this.toggleTodoHandler
+        };
+
+        this.createTodoWindowHandlers = {
+            saveTodoHandler: this.saveTodoHandler
+        };
+
+        this.filterPanel = new FilterPanel(this.filters, this.filterPanelHandlers);
+        this.todoList = new TodoList(this.todos, this.todoElementHandlers);
+        this.createTodoWindow = new CreateTodoWindow(this.createTodoWindowHandlers);
+    }
+    
+    updateTodosState = (todos) => {
         this.todos = todos;
-        displayTodos(this.todos, this.filters);
+        this.todos.sort(compareTodos);
+        this.todoList.updateTodosProps(getFilteredTodos(this.todos, this.filters));
     }
 
-    this.updateFiltersState = (filterUpdateObject) => {
+    updateFiltersState = (filterUpdateObject) => {
         this.filters = {
             ...this.filters,
             ...filterUpdateObject
         };
-        displayTodos(this.todos, this.filters);
+        this.todoList.updateTodosProps(getFilteredTodos(this.todos, this.filters));
+        this.filterPanel.updateFiltersProps(this.filters);
     }
 
-    this.getTodosAndDisplay = () => {
-        readTodos()
-        .then(res => res.data)
-        .then(todosReceived => {
-            this.updateTodosState(todosReceived);
-        })
-        .catch(e => {
-            alert(e.message);
-        });
+    filterStatusChangedHandler = (filterStatus) => {
+        this.updateFiltersState({todoStatus: filterStatus});
     }
 
-    this.saveTodoElementHandler = () => {
-        const title = document.querySelector('#create-todo-title').value;
-        const body = document.querySelector('#create-todo-body').value;
-        const category = document.querySelector('#create-todo-category-choices').value;
-        const priority = document.querySelector('#create-todo-priority-choices').value;
-
-        if(!title) {
-            throw new Error("Empty Todo Title");
-        }
-            
-        const todo = new Todo(title, body, priority, category);
-
-        createTodo(todo)
-            .then(_ => {
-                closeCreateTodoDialog();
-            })
-            .catch(_ => {
-                alert(e.message);
-            })
-            .finally(_ => {
-                this.getTodosAndDisplay();
-            });
-    }
-    
-    // performs the actions to delete a todo based on it's id
-    this.deleteTodoElement = (todoID) => {
-        deleteTodo(todoID)
-            .then(() => {
-                this.getTodosAndDisplay();
-            })
-            .catch(e => {
-                alert(e.message);
-            });
-    }
-    
-    // toggle a todo's selection
-    this.toggleTodoSelection = (todoElement) => {
-        const todoID = todoElement.getAttribute('data-todo-id');
-        const todo = this.todos.find(todo => todo.id === todoID);
-        
-        updateTodo(todoID, {completed: !todo.completed})
-            .then(() => {
-                this.getTodosAndDisplay();
-            }).catch(e => {
-                alert(e.message);
-            });
-    }
-    
-    // handle click event in todo list
-    this.handleTodoListClick = (event) => {
-        const todoElement = event.target.closest('div[data-type="todo"]');
-        const todoList = document.querySelector('#todo-list');
-        if(!todoElement || !todoList.contains(todoElement)) {
-            throw new Error("Something unexpected has happened here");
-        }
-    
-        if(event.target.getAttribute('data-type') === "trash-btn") {
-            this.deleteTodoElement(todoElement.getAttribute('data-todo-id'));
-        }else {
-            this.toggleTodoSelection(todoElement);
-        }
-    }
- 
-    // handles the search bar input value changed event
-    // TODO: Club these 3 into a single handler
-    this.searchbarValueChangedHandler = (event) => {
-        const patternToMatch = event.target.value;
+    searchPatternChangedHandler = (patternToMatch) => {
         this.updateFiltersState({pattern: patternToMatch});
     }
 
-    this.prioritySelectValueChangedHandler = (event) => {
-        const prioritySelected = event.target.value;
-        this.updateFiltersState({priorityFilter: priorities[prioritySelected]})
+    priorityChangedHandler = (priorityKey) => {
+        this.updateFiltersState({priorityFilter: priorities[priorityKey]});
     }
 
-    // handle the change event in category select filter
-    this.categorySelectValueChangedHandler = (event) => {
-        const categorySelected = event.target.value;
-        this.updateFiltersState({categoryFilter: categories[categorySelected]})
+    categoryChangedHandler = (categoryKey) => {
+        this.updateFiltersState({categoryFilter: categories[categoryKey]});
     }
 
-    // handler to clear applied filters
-    this.clearFiltersHandler = () => {
-        // reset state
+    clearFiltersHandler = () => {
         this.updateFiltersState({
             pattern: '',
             todoStatus: todoStatuses.DEFAULT,
             priorityFilter: priorities.DEFAULT,
             categoryFilter: categories.DEFAULT
         });
-        clearFilterForm();
     }
 
-    // handle the filter status changed
-    this.filterStatusClickHandler = (event) => {
-        const filterOptionClicked = event.target.closest('div[data-type="filter-option"]');
-        if(!filterOptionClicked) {
-            return ;
-        }
-        
-        toggleFilterStatusPanel(event.target);
+    deleteTodoHandler = (todoID) => {
+        deleteTodo(todoID)
+            .finally(() => {
+                this.getTodosAndDisplay();
+            });
+    }
 
-        const filterStatus = (filterOptionClicked.hasAttribute('data-filter-selected')
-                             ? filterOptionClicked.getAttribute('data-filter-status')
-                            : todoStatuses.DEFAULT);
-        
-        this.updateFiltersState({todoStatus: filterStatus});                     
+    toggleTodoHandler = (todoID) => {
+        const todo = this.todos.find(todo => todo.id === todoID);
+        updateTodo(todoID, {completed: !todo.completed})
+            .finally(() => {
+                this.getTodosAndDisplay();
+            });
+    }
+
+    saveTodoHandler = ({title, body, priority, category}) => {
+        const todo = new Todo(title, body, priority, category);
+        createTodo(todo)
+            .finally(_ => {
+                this.getTodosAndDisplay();
+            });
+    }
+
+    getTodosAndDisplay = () => {
+        readTodos()
+        .then(res => res.data)
+        .then(todosReceived => {
+            this.updateTodosState(todosReceived);
+        });
     }
 }
-
 export {TodoAppState};

@@ -1,4 +1,4 @@
-import {findMatchesTodo, todoStatuses, priorities, categories} from './todo-model-functions.js';
+import {todoStatuses, priorities, categories} from './todo-model-functions.js';
 
 // apply filters to todos
 function getFilteredTodos(todos, filters) {

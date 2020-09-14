@@ -16,37 +16,25 @@ const priorities = {
         value: 'No Priority',
         order: 0,
         indicatorHTML: '',
-        comparesTo: function(priority) {
-            return true;
-        }
     },
     LOW: {
         key: 'LOW',
         value: 'Low Priority',
         order: 1,
         indicatorHTML: '<span class="priority-indicator low">!</span>',
-        comparesTo: function(priority) {
-            return this.key === priority;
-        }
     },
     MEDIUM: {
         key: 'MEDIUM',
         value: 'Medium Priority',
         order: 2,
         indicatorHTML: '<span class="priority-indicator medium">!!</span>',
-        comparesTo: function(priority) {
-            return this.key === priority;
-        }
     },
     HIGH: {
         key: 'HIGH',
         value: 'High Priority',
         order: 2,
         indicatorHTML: '<span class="priority-indicator high">!!!</span>',
-        comparesTo: function(priority) {
-            return this.key === priority;
-        }
-    }
+    },
 }
 
 const categories = {
@@ -54,33 +42,21 @@ const categories = {
         key: 'DEFAULT',
         value: 'No Category',
         indicatorHTML: '',
-        comparesTo: function(category) {
-            return true;
-        }
     },
     WORK: {
         key: 'WORK',
         value: 'Work',
         indicatorHTML: '<span class="category-indicator">work</span>',
-        comparesTo: function(category) {
-            return this.key === category;
-        }
     },
     HOBBY: {
         key: 'HOBBY',
         value: 'Hobby',
         indicatorHTML: '<span class="category-indicator">hobby</span>',
-        comparesTo: function(category) {
-            return this.key === category;
-        }
     },
     ADMIN: {
         key: 'ADMIN',
         value: 'Admin',
         indicatorHTML: '<span class="category-indicator">admin</span>',
-        comparesTo: function(category) {
-            return this.key === category;
-        }
     }
 }
 

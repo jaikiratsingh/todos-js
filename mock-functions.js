@@ -59,7 +59,7 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if(workingInternet) {
-                    todos.push(todo);
+                    todos.push({...todo});
                     resolve({
                         status: 200,
                         message: "Todo created successfully"
