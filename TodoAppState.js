@@ -4,6 +4,7 @@ import { getFilteredTodos } from './filter-functions.js';
 import { FilterPanel } from './View/FilterPanel.js';
 import { TodoList } from './View/TodoList.js';
 import { CreateTodoWindow } from './View/CreateTodoWindow.js';
+import { EditTodoWindow } from './View/EditTodoWindow.js';
 
 class TodoAppState {
     constructor() {
@@ -25,16 +26,22 @@ class TodoAppState {
 
         this.todoElementHandlers = {
             deleteTodoHandler: this.deleteTodoHandler,
-            toggleTodoHandler: this.toggleTodoHandler
+            toggleTodoHandler: this.toggleTodoHandler,
+            openEditWindowHandler: this.openEditWindowHandler
         };
 
         this.createTodoWindowHandlers = {
             saveTodoHandler: this.saveTodoHandler
         };
 
+        this.editTodoWindowHandlers = {
+            updateTodoHandler: this.updateTodoHandler
+        }
+
         this.filterPanel = new FilterPanel(this.filters, this.filterPanelHandlers);
         this.todoList = new TodoList(this.todos, this.todoElementHandlers);
         this.createTodoWindow = new CreateTodoWindow(this.createTodoWindowHandlers);
+        this.editTodoWindow = new EditTodoWindow(undefined, this.editTodoWindowHandlers);  // better way to pass 1st prop as undefined
     }
     
     updateTodosState = (todos) => {
@@ -89,6 +96,21 @@ class TodoAppState {
         updateTodo(todoID, {completed: !todo.completed})
             .finally(() => {
                 this.getTodosAndDisplay();
+            });
+    }
+
+    openEditWindowHandler = (todoID) => {
+        const todo = this.todos.find(todo => todo.id === todoID);
+        this.editTodoWindow.updateProps({todo, isOpen: true});
+    }
+
+    updateTodoHandler = (updatedTodo) => {
+        const {id: todoID, ...otherFields} = updatedTodo;  // TODO: is otherFields the correct term ?
+
+        updateTodo(todoID, otherFields)
+            .finally(() => {
+                this.getTodosAndDisplay();
+                this.editTodoWindow.updateProps({isOpen: false});
             });
     }
 

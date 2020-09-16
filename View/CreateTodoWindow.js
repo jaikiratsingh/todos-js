@@ -15,13 +15,20 @@ class CreateTodoWindow {
         this.saveBtn = document.querySelector('#create-todo-save-btn');
         this.discardBtn = document.querySelector('#create-todo-discard-btn');
 
-        this.backDrop = document.querySelector('#backdrop');
+        this.backDrop = this.createBackDrop();
 
         this.createTodoWindowHandlers = createTodoWindowHandlers;
         
         this.addCreateTodoEventHandlers();
 
         this.render();
+    }
+
+    createBackDrop = () => {
+        const backDrop = document.createElement('div');
+        backDrop.id = 'backdrop';
+        backDrop.classList.add('backdrop');
+        return backDrop;
     }
 
     render = () => {
@@ -89,13 +96,13 @@ class CreateTodoWindow {
 
     // function to open the todo dialog
     openCreateTodoDialog = () => {
-        this.backDrop.style.display = 'block';
+        document.body.appendChild(this.backDrop);
         this.dialog.style.display = 'block';
     }
 
     // function to close the todo dialog
     closeCreateTodoDialog = () => {
-        this.backDrop.style.display = 'none';
+        document.body.removeChild(this.backDrop);
         this.dialog.style.display = 'none';
     }
 }
