@@ -1,0 +1,5 @@
+class BackDrop {
+    constructor(isOpen) {
+        
+    }
+}
