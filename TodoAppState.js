@@ -71,8 +71,11 @@ class TodoAppState {
         // delete undo-ed states
         this.history = this.history.filter((state, index) => index <= this.currentIndexState);
         // add a new state
+
+        const newTodos = todos.map(todo => ({...todo}));  // use lodash to make deep copy
+
         this.history = [...this.history, {
-            todos: [...todos],
+            todos: newTodos,
             filters: {...filterState},
             diff: {
                 action,
@@ -88,11 +91,13 @@ class TodoAppState {
         const todoState = this.getCurrentStateTodos();
         const filterState = this.getCurrentStateFilters();
 
+        const newTodos = todoState.map(todo => ({...todo}));  // use lodash to make deep copy
+
         // delete undo-ed states
         this.history = this.history.filter((state, index) => index <= this.currentIndexState);
         // add a new state
         this.history = [...this.history, {
-            todos: [...todoState],  // do we need a deep copy here ??
+            todos: newTodos,  // do we need a deep copy here ??
             filters: {...filterState, ...filterUpdateObject},
             diff: {
                 action: actions.NONE,
