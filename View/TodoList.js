@@ -1,9 +1,10 @@
 import {TodoElement} from './TodoElement.js';
 
 class TodoList {
-    constructor(todos, todoElementHandlers) {
+    constructor(todos, selectedTodos, todoElementHandlers) {
         this.props = {
             todos,
+            selectedTodos,
             todoElementHandlers
         }
 
@@ -18,12 +19,18 @@ class TodoList {
         this.render();
     }
 
+    updateSelectedTodosProps = (todoIDs) => {
+        this.props.selectedTodos = todoIDs;
+        this.render();
+    }
+
     render = () => {
         this.todoList.innerHTML = '';
         this.todoElements = [];
 
         this.props.todos.forEach(todo => {
-            const todoElement = new TodoElement(todo, this.props.todoElementHandlers);
+            const isSelected = this.props.selectedTodos.includes(todo.id);
+            const todoElement = new TodoElement(todo, isSelected, this.props.todoElementHandlers);
             this.todoElements.push(todoElement);
             this.todoList.appendChild(todoElement.getTodoElementNode());
         });

@@ -1,12 +1,13 @@
 import { todoStatuses, categories, priorities } from "../todo-model-functions";
 
 class TodoElement {
-    constructor(todo, todoElementHandlers) {
+    constructor(todo, isSelected, todoElementHandlers) {
         /**
          * todoElementHandlers = {deleteTodoHandler, toggleTodoHandler}
          */
         this.props = {
             todo,
+            isSelected,
             todoElementHandlers
         };
         this.node = this.render();
@@ -21,13 +22,20 @@ class TodoElement {
     todoElementClickHandler = (event) => {
         const todoID = this.props.todo.id;
 
-        if(event.target.getAttribute('data-type') === "trash-btn") {
-            this.props.todoElementHandlers.deleteTodoHandler(todoID);
-        }else if(event.target.getAttribute('data-type') === 'radio-btn') {
-            this.props.todoElementHandlers.toggleTodoHandler(todoID);
-        }else {
-            this.props.todoElementHandlers.openEditWindowHandler(todoID);
-        }
+        switch(event.target.getAttribute('data-type')) {
+            case 'trash-btn' :
+                this.props.todoElementHandlers.deleteTodoHandler(todoID);
+                break;
+            case 'radio-btn' :
+                this.props.todoElementHandlers.toggleTodoHandler(todoID);
+                break;
+            case 'select-checkbox' :
+                this.props.todoElementHandlers.selectTodoHandler(todoID);
+                event.preventDefault();
+                break;
+            default :
+                this.props.todoElementHandlers.openEditWindowHandler(todoID);    
+        }  
     }
 
     render = () => {
@@ -47,8 +55,32 @@ class TodoElement {
             ${priorities[this.props.todo.priority].indicatorHTML}
             <span class="material-icons trash-btn" data-type="trash-btn">delete</span>
         `;
+
+        const todoWrapper = document.createElement("div");
+        todoWrapper.classList.add("todo__wrapper");
+        todoWrapper.appendChild(todoElement);
+
+        const selectTodoRadio = document.createElement("input");
+        selectTodoRadio.classList.add("todo__select");
+        selectTodoRadio.checked = this.props.isSelected;
+        selectTodoRadio.setAttribute('data-type', 'select-checkbox');
+        selectTodoRadio.type = "checkbox";
+
+        if(selectTodoRadio.checked === false) {
+            todoWrapper.addEventListener('mouseenter', () => {
+                selectTodoRadio.style.display = 'block';
+            });
     
-        return todoElement;
+            todoWrapper.addEventListener('mouseleave', () => {
+                selectTodoRadio.style.display = 'none';
+            });
+        }else {
+            selectTodoRadio.style.display = 'block';
+        }
+
+        todoWrapper.appendChild(selectTodoRadio);
+    
+        return todoWrapper;
     }
 }
 

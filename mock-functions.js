@@ -16,7 +16,7 @@ const uuid = (function() {
 const workingInternet = true;
 
 // to mock server side of todos
-const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
+const [createTodo, readTodos, updateTodo, deleteTodo, deleteBulkTodos, updateBulkTodos, createBulkTodos] = (function() {
     let todos = [
         {
             id: uuid(),
@@ -145,8 +145,84 @@ const [createTodo, readTodos, updateTodo, deleteTodo] = (function() {
         }); 
     } 
 
+    function deleteBulkTodos(selectedTodoIDs) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if(workingInternet) {
+                    todos = todos.filter(todo => !selectedTodoIDs.includes(todo.id));
 
-    return [createTodo, readTodos, updateTodo, deleteTodo];
+                    resolve({
+                        status: 200,
+                        message: "Todos deleted successfully"
+                    });
+                }else {
+                    reject({
+                        status: 404,
+                        data: undefined,
+                        message: "Something went wrong. Please check your internet connection"
+                    })
+                }
+            }, getRandomTime());
+        }); 
+    }
+
+    function updateBulkTodos(updatedTodos) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if(workingInternet) {
+                    updatedTodos.forEach(todo => {
+                        const storedTodo = todos.find(storedTodo => todo.id === storedTodo.id);
+                        if(!storedTodo) {
+                            reject({
+                                status: 404,   // Use a different code
+                                message: 'Todo Not Found'
+                            });
+                        }
+
+                        for(let property in todo) {
+                            if(todo.hasOwnProperty(property)) {
+                                storedTodo[property] = todo[property];
+                            }
+                        }
+    
+                        resolve({
+                            status: 200,
+                            message: "Todo updated successfully"
+                        });                        
+                    })
+                }else {
+                    reject({
+                        status: 404,
+                        message: "Something went wrong. Please check your internet connection"
+                    })
+                }
+            }, getRandomTime());
+        })
+    }
+
+    function createBulkTodos(bulkTodos) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if(workingInternet) {
+                    bulkTodos.forEach(todo => {
+                        todos.push({...todo});
+                    })
+                    resolve({
+                        status: 200,
+                        message: "Todo created successfully"
+                    });
+                }else {
+                    reject({
+                        status: 404,
+                        message: "Something went wrong. Please check your internet connection"
+                    })
+                }
+            }, getRandomTime());
+        });
+    }
+
+
+    return [createTodo, readTodos, updateTodo, deleteTodo, deleteBulkTodos, updateBulkTodos, createBulkTodos];
 })();
 
-export {uuid, createTodo, readTodos, updateTodo, deleteTodo};
+export {uuid, createTodo, readTodos, updateTodo, deleteTodo, deleteBulkTodos, updateBulkTodos, createBulkTodos};

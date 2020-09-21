@@ -1,4 +1,4 @@
-import {createTodo, readTodos, updateTodo, deleteTodo} from './mock-functions.js';
+import {createTodo, readTodos, updateTodo, deleteTodo, deleteBulkTodos, updateBulkTodos, createBulkTodos} from './mock-functions.js';
 import {Todo, todoStatuses, categories, priorities, compareTodos} from './todo-model-functions.js';
 import { getFilteredTodos } from './filter-functions.js';
 import { FilterPanel } from './View/FilterPanel.js';
@@ -7,6 +7,7 @@ import { CreateTodoWindow } from './View/CreateTodoWindow.js';
 import { EditTodoWindow } from './View/EditTodoWindow.js';
 import { DocumentListeners } from './View/DocumentListeners.js';
 import {actions} from './actions.js';
+import { BulkActions } from './View/BulkActions.js';
 
 class TodoAppState {
     constructor() {
@@ -24,6 +25,7 @@ class TodoAppState {
             }
         }];  // to store histories
         this.currentIndexState = 0;
+        this.selectedTodos = [];
 
         this.filterPanelHandlers = {
             filterStatusChangedHandler: this.filterStatusChangedHandler,
@@ -36,7 +38,8 @@ class TodoAppState {
         this.todoElementHandlers = {
             deleteTodoHandler: this.deleteTodoHandler,
             toggleTodoHandler: this.toggleTodoHandler,
-            openEditWindowHandler: this.openEditWindowHandler
+            openEditWindowHandler: this.openEditWindowHandler,
+            selectTodoHandler: this.selectTodoHandler
         };
 
         this.createTodoWindowHandlers = {
@@ -53,9 +56,13 @@ class TodoAppState {
         });
 
         this.filterPanel = new FilterPanel(this.getCurrentStateFilters(), this.filterPanelHandlers);
-        this.todoList = new TodoList(this.getCurrentStateTodos(), this.todoElementHandlers);
+        this.todoList = new TodoList(this.getCurrentStateTodos(), this.selectedTodos, this.todoElementHandlers);
         this.createTodoWindow = new CreateTodoWindow(this.createTodoWindowHandlers);
         this.editTodoWindow = new EditTodoWindow(undefined, this.editTodoWindowHandlers);  // better way to pass 1st prop as undefined
+        this.bulkActions = new BulkActions(this.selectedTodos.length !== 0, {
+            deleteBulkListener: this.deleteBulkListener,
+            markCompleteBulkListener: this.markCompleteBulkListener
+        });
     }
 
     getCurrentStateTodos = () => {
@@ -89,6 +96,7 @@ class TodoAppState {
                 payload
             }
         }];
+        this.updateSelectedTodos([]);
         // update counter
         this.currentIndexState = this.currentIndexState + 1;
         this.todoList.updateTodosProps(getFilteredTodos(this.getCurrentStateTodos(), this.getCurrentStateFilters()));
@@ -114,6 +122,7 @@ class TodoAppState {
         }];
         // update counter
         this.currentIndexState = this.currentIndexState + 1;
+        this.updateSelectedTodos([]);
 
         this.todoList.updateTodosProps(getFilteredTodos(this.getCurrentStateTodos(), this.getCurrentStateFilters()));
         this.filterPanel.updateFiltersProps(this.getCurrentStateFilters());
@@ -124,6 +133,36 @@ class TodoAppState {
 
         this.todoList.updateTodosProps(getFilteredTodos(this.getCurrentStateTodos(), this.getCurrentStateFilters()));
         this.filterPanel.updateFiltersProps(this.getCurrentStateFilters());
+    }
+
+    updateSelectedTodos = (selectedTodos) => {
+        this.selectedTodos = selectedTodos;
+        this.todoList.updateSelectedTodosProps(this.selectedTodos);
+        this.bulkActions.updateVisibilityProps(this.selectedTodos.length !== 0);
+    }
+
+    deleteBulkListener = () => {
+        const selectedTodos = this.selectedTodos.map(todoID => this.getCurrentStateTodos().find(todo => todo.id === todoID));
+
+        deleteBulkTodos(this.selectedTodos).then(() => {
+            this.getTodosAndDisplay({
+                action: actions.DELETE_BULK,
+                payload: selectedTodos
+            });
+        });
+    }
+
+    markCompleteBulkListener = () => {
+        const selectedTodos = this.selectedTodos.map(todoID => this.getCurrentStateTodos().find(todo => todo.id === todoID));
+
+        const updateTodosObject = this.selectedTodos.map(todoID => ({id: todoID, completed: true}));
+
+        updateBulkTodos(updateTodosObject).then(() => {
+            this.getTodosAndDisplay({
+                action: actions.UPDATE_BULK,
+                payload: selectedTodos
+            });
+        });
     }
 
     undoHandler = () => {
@@ -163,6 +202,22 @@ class TodoAppState {
                     this.updateCurrentIndexState(newIndex);
                 }).catch(() => {
                     // undo failed. handle later
+                });
+                break;
+            case actions.ADD_BULK.name :
+                createBulkTodos(payload).then(() => {
+                    // do nothing
+                    this.updateCurrentIndexState(newIndex);
+                }).catch(() => {
+                    // undo failed, handle later
+                })
+                break;
+            case actions.UPDATE_BULK.name :
+                updateBulkTodos(payload).then(() => {
+                    // do nothing
+                    this.updateCurrentIndexState(newIndex);
+                }).catch(() => {
+                    // undo failed, try later
                 });
                 break;
             default :
@@ -207,6 +262,22 @@ class TodoAppState {
                     this.updateCurrentIndexState(newIndex);
                 }).catch(() => {
                     // undo failed. handle later
+                });
+                break;
+            case actions.DELETE_BULK.name :
+                deleteBulkTodos(payload).then(() => {
+                    // do nothing
+                    this.updateCurrentIndexState(newIndex);
+                }).catch(() => {
+                    // undo failed. handle later
+                });
+                break;
+            case actions.UPDATE_BULK.name :
+                updateBulkTodos(payload).then(() => {
+                    // do nothing
+                    this.updateCurrentIndexState(newIndex);
+                }).catch(() => {
+                    // undo failed, try later
                 });
                 break;
             default :
@@ -291,6 +362,15 @@ class TodoAppState {
                     payload: todo
                 });
             });
+    }
+
+    selectTodoHandler = (todoID) => {
+        if(this.selectedTodos.includes(todoID)) {
+            const newSelectedTodosList = this.selectedTodos.filter(selectedTodoID => selectedTodoID !== todoID);
+            this.updateSelectedTodos(newSelectedTodosList);
+        }else {
+            this.updateSelectedTodos([...this.selectedTodos, todoID]);
+        }
     }
 
     getTodosAndDisplay = (diff) => {

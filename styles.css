@@ -143,6 +143,31 @@ textarea {
     margin: 10px 0;
 }
 
+.selected-todos-actions {
+    display: none;
+    margin-top: 25px;
+}
+
+.selected-todos-actions > button {
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    margin-bottom: 50px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    color: white;
+}
+
+.delete-bulk {
+    background: #dc3545;
+}   
+
+.mark-complete-bulk {
+    background: #007bff;
+}
+
 .logo {
     background: var(--primary-color);
     color: white;
@@ -162,16 +187,27 @@ hr {
     min-width: 80%;
 }
 
+.todo__wrapper {
+    display: flex;
+    align-items: center;
+}
+
 .todo {
     border-bottom: solid 1px #ccc;
     font-size: 1.2rem;
     padding: 0.2rem;
     display: flex;
     align-items: center;
+    width: 100%;
     outline: none;
     cursor: zoom-in;
     /* margin: 10px 0; */
     border-radius: 7px;
+}
+
+.todo__select {
+    display: none;
+    margin: 0 15px;
 }
 
 .todo__radio {
